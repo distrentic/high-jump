@@ -6,13 +6,14 @@ import shell from "./shell";
 const PORT = 8080;
 const app = express();
 const server = new HttpServer(app);
-const io = new SocketServer(server);
+const io = new SocketServer(server, { serveClient: false, path: "/ssh" });
+
 
 app.get("/", (req, res) => res.send("Express + TypeScript Server"));
 
 io.on("connection", shell);
 
-io.on("connection", function (socket: any) {
+io.on("connection", (socket: any) => {
   console.log("a user connected");
 });
 

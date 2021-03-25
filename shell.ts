@@ -9,7 +9,7 @@ const shell = (socket: Socket) => {
   session.on("banner", (data) => {
     // need to convert to cr/lf for proper formatting
     data = data.replace(/\r?\n/g, "\r\n");
-    socket.emit("data", data);
+    socket.emit("data", Buffer.from(data, "utf-8"));
   });
 
   session.on("ready", () => {
@@ -18,7 +18,7 @@ const shell = (socket: Socket) => {
       (err, stream) => {
         if (err) throw err;
 
-        socket.on("data", (data: any) => {
+        socket.on("data", (data: string) => {
           stream.write(data);
         });
 
@@ -49,7 +49,7 @@ const shell = (socket: Socket) => {
         });
 
         stream.on("data", (data: any) => {
-          socket.emit("data", data);
+          socket.emit("data", Buffer.from(data, "utf-8"));
         });
 
         stream.on("close", (code: any, signal: any) => {
