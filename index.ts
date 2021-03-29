@@ -14,7 +14,7 @@ const publicPath = path.join(__dirname, "public");
 
 app.use(express.static(publicPath));
 
-app.get("/", (req, res) => res.send("Express + TypeScript Server"));
+app.get("/", (req, res) => res.send("high-jump: Web SSH backend"));
 
 app.use(
   "/connect",
