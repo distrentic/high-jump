@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { Server as HttpServer } from "http";
 import { Server as SocketServer } from "socket.io";
+import log from "./log";
 import shell from "./shell";
 
 const PORT = 8080;
@@ -20,16 +21,12 @@ app.use(
   express.static(publicPath, { extensions: ["htm", "html"] })
 );
 
-io.on("connection", shell);
-
-io.on("connection", () => {
-  console.log("a user connected");
-});
+io.on("connection", (socket) => shell(socket, log));
 
 app.get("/connect/host", (req, res) => {
   res.sendFile(path.join(publicPath, "index.html"));
 });
 
 server.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
+  log.info(`high-jump is running at https://localhost:${PORT}`);
 });

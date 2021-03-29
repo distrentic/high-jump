@@ -1,4 +1,5 @@
 import { Socket } from "socket.io";
+import * as winston from "winston";
 import ssh2 from "ssh2";
 
 interface ShellConfig {
@@ -17,12 +18,14 @@ interface TermConfig {
 
 type ShellRequest = ShellConfig & TermConfig;
 
-const shell = (socket: Socket) => {
+const shell = (socket: Socket, log: winston.Logger) => {
   const session = new ssh2.Client();
   let shellConfig: ShellConfig;
   let termConfig: TermConfig;
 
   socket.on("shell", (req: ShellRequest) => {
+    log.info("shell requested for %s:%d", req.host, req.port);
+
     shellConfig = req;
     termConfig = req;
 
@@ -36,12 +39,15 @@ const shell = (socket: Socket) => {
   });
 
   session.on("banner", (data) => {
+    log.debug("banner sent by %s:%d", shellConfig.host, shellConfig.port);
     // need to convert to cr/lf for proper formatting
     data = data.replace(/\r?\n/g, "\r\n");
     socket.emit("data", Buffer.from(data, "utf-8"));
   });
 
   session.on("ready", () => {
+    log.info("shell is ready for %s:%d", shellConfig.host, shellConfig.port);
+
     session.shell(
       {
         term: "xterm-color",
@@ -70,16 +76,17 @@ const shell = (socket: Socket) => {
         );
 
         socket.on("disconnecting", (reason) => {
-          console.log(reason);
+          log.debug("client disconnecting with reason '%s'", reason);
         });
 
         socket.on("disconnect", (reason) => {
-          console.log(reason);
+          log.debug("client disconnected with reason '%s'", reason);
           session.end();
         });
 
         socket.on("error", (err) => {
-          console.log(err);
+          log.error("client connection error");
+          log.error(err);
           session.end();
         });
 
@@ -87,46 +94,40 @@ const shell = (socket: Socket) => {
           socket.emit("data", Buffer.from(data, "utf-8"));
         });
 
-        stream.on(
-          "close",
-          (
-            exitCode?: number,
-            signalName?: string,
-            didCoreDump?: boolean,
-            description?: string
-          ) => {
-            console.log(
-              "CLOSE",
-              exitCode,
-              signalName,
-              didCoreDump,
-              description
-            );
-            session.end();
-          }
-        );
+        stream.on("close", (code?: number, signal?: string) => {
+          log.debug(
+            "connection closed. exit code: %s, signal: %s",
+            code,
+            signal
+          );
+          session.end();
+        });
 
-        stream.stderr.on("data", (data) => {
-          console.log("STDERR: " + data);
+        stream.stderr.on("data", (err) => {
+          log.error("shell error");
+          log.error(err);
         });
       }
     );
   });
 
   session.on("end", () => {
-    console.log("CONN END BY HOST");
+    log.debug("connection end by host");
   });
+
   session.on("close", (hadError) => {
-    console.log("CONN CLOSE. HAD ERROR:", hadError);
+    log.info("connection closed %s", hadError ? "with error" : "without error");
   });
+
   session.on("error", (err) => {
-    console.log("CONN ERROR", err);
+    log.error("connection error");
+    log.error(err);
   });
 
   session.on(
     "keyboard-interactive",
     (name, instructions, instructionsLang, prompts, finish) => {
-      console.log("conn.on('keyboard-interactive')");
+      log.debug("conn.on('keyboard-interactive')");
       finish(["password"]);
     }
   );
