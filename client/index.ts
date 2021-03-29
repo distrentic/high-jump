@@ -19,10 +19,19 @@ function resize() {
   socket.emit("resize", {
     cols: term.cols,
     rows: term.rows,
-    width: term.cols,
-    height: term.rows,
+    width: terminalContainer?.clientWidth,
+    height: terminalContainer?.clientHeight,
   });
 }
+
+socket.on("connect", () => {
+  socket.emit("size", {
+    cols: term.cols,
+    rows: term.rows,
+    width: terminalContainer?.clientWidth,
+    height: terminalContainer?.clientHeight,
+  });
+});
 
 term.onData((data: string) => {
   socket.emit("data", data);

@@ -2,9 +2,21 @@ import { Socket } from "socket.io";
 import ssh2 from "ssh2";
 
 const shell = (socket: Socket) => {
-  var session = new ssh2.Client();
+  const session = new ssh2.Client();
+  let rows: number;
+  let cols: number;
+  let height: number;
+  let width: number;
 
-  socket.on("geometry", (rows: number, cols: number) => {});
+  socket.on(
+    "size",
+    (data: { rows: number; cols: number; height: number; width: number }) => {
+      rows = data.rows;
+      cols = data.cols;
+      height = data.height;
+      width = data.width;
+    }
+  );
 
   session.on("banner", (data) => {
     // need to convert to cr/lf for proper formatting
@@ -14,7 +26,7 @@ const shell = (socket: Socket) => {
 
   session.on("ready", () => {
     session.shell(
-      { term: "xterm-color", rows: 80, cols: 40 },
+      { term: "xterm-color", rows, cols, height, width },
       (err, stream) => {
         if (err) throw err;
 
