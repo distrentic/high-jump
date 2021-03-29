@@ -25,7 +25,11 @@ function resize() {
 }
 
 socket.on("connect", () => {
-  socket.emit("size", {
+  socket.emit("shell", {
+    host: "",
+    port: 22,
+    username: "",
+    password: "",
     cols: term.cols,
     rows: term.rows,
     width: terminalContainer?.clientWidth,

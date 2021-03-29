@@ -1,22 +1,39 @@
 import { Socket } from "socket.io";
 import ssh2 from "ssh2";
 
+interface ShellConfig {
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+}
+
+interface TermConfig {
+  rows: number;
+  cols: number;
+  height: number;
+  width: number;
+}
+
+type ShellRequest = ShellConfig & TermConfig;
+
 const shell = (socket: Socket) => {
   const session = new ssh2.Client();
-  let rows: number;
-  let cols: number;
-  let height: number;
-  let width: number;
+  let shellConfig: ShellConfig;
+  let termConfig: TermConfig;
 
-  socket.on(
-    "size",
-    (data: { rows: number; cols: number; height: number; width: number }) => {
-      rows = data.rows;
-      cols = data.cols;
-      height = data.height;
-      width = data.width;
-    }
-  );
+  socket.on("shell", (req: ShellRequest) => {
+    shellConfig = req;
+    termConfig = req;
+
+    session.connect({
+      host: req.host,
+      port: req.port,
+      username: req.username,
+      password: req.password,
+      tryKeyboard: true,
+    });
+  });
 
   session.on("banner", (data) => {
     // need to convert to cr/lf for proper formatting
@@ -26,7 +43,13 @@ const shell = (socket: Socket) => {
 
   session.on("ready", () => {
     session.shell(
-      { term: "xterm-color", rows, cols, height, width },
+      {
+        term: "xterm-color",
+        rows: termConfig.rows,
+        cols: termConfig.cols,
+        height: termConfig.height,
+        width: termConfig.width,
+      },
       (err, stream) => {
         if (err) throw err;
 
@@ -93,14 +116,6 @@ const shell = (socket: Socket) => {
       finish(["password"]);
     }
   );
-
-  session.connect({
-    host: "",
-    port: 22,
-    username: "",
-    password: "",
-    tryKeyboard: true,
-  });
 };
 
 export default shell;
