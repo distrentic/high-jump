@@ -83,14 +83,28 @@ const shell = (socket: Socket) => {
           session.end();
         });
 
-        stream.on("data", (data: any) => {
+        stream.on("data", (data: string) => {
           socket.emit("data", Buffer.from(data, "utf-8"));
         });
 
-        stream.on("close", (code: any, signal: any) => {
-          console.log(code, signal);
-          session.end();
-        });
+        stream.on(
+          "close",
+          (
+            exitCode?: number,
+            signalName?: string,
+            didCoreDump?: boolean,
+            description?: string
+          ) => {
+            console.log(
+              "CLOSE",
+              exitCode,
+              signalName,
+              didCoreDump,
+              description
+            );
+            session.end();
+          }
+        );
 
         stream.stderr.on("data", (data) => {
           console.log("STDERR: " + data);
@@ -99,11 +113,11 @@ const shell = (socket: Socket) => {
     );
   });
 
-  session.on("end", (err: any) => {
-    console.log("CONN END BY HOST", err);
+  session.on("end", () => {
+    console.log("CONN END BY HOST");
   });
-  session.on("close", (err) => {
-    console.log("CONN CLOSE", err);
+  session.on("close", (hadError) => {
+    console.log("CONN CLOSE. HAD ERROR:", hadError);
   });
   session.on("error", (err) => {
     console.log("CONN ERROR", err);
