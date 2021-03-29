@@ -15,17 +15,20 @@ app.use(express.static(publicPath));
 
 app.get("/", (req, res) => res.send("Express + TypeScript Server"));
 
-app.use('/connect', express.static(publicPath, { extensions: ['htm', 'html'] }));
+app.use(
+  "/connect",
+  express.static(publicPath, { extensions: ["htm", "html"] })
+);
 
 io.on("connection", shell);
 
-io.on("connection", (socket: any) => {
+io.on("connection", () => {
   console.log("a user connected");
 });
 
 app.get("/connect/host", (req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
-})
+  res.sendFile(path.join(publicPath, "index.html"));
+});
 
 server.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
