@@ -1,9 +1,11 @@
 const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   mode: "production",
   entry: "./index.ts",
+  plugins: [new MiniCssExtractPlugin({ filename: "high-jump.css" })],
   module: {
     rules: [
       {
@@ -11,13 +13,17 @@ module.exports = {
         use: "ts-loader",
         exclude: /node_modules/,
       },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+      },
     ],
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    filename: "ssh.bundle.js",
+    filename: "high-jump.bundle.js",
     path: path.resolve(__dirname, "../build/public"),
   },
   optimization: {

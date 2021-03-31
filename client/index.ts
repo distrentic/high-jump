@@ -1,6 +1,7 @@
 import io from "socket.io-client";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
+import "./high-jump.scss";
 
 const term = new Terminal({ cursorBlink: true });
 const terminalContainer = document.getElementById("terminal-container");
