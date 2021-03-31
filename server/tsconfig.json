@@ -6,6 +6,6 @@
     "noImplicitAny": true,
     "strict": true,
     "rootDir": ".",
-    "outDir": "../build",
+    "outDir": "./build",
   }
 }

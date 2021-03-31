@@ -24,7 +24,7 @@ module.exports = {
   },
   output: {
     filename: "high-jump.bundle.js",
-    path: path.resolve(__dirname, "../build/public"),
+    path: path.resolve(__dirname, "./build"),
   },
   optimization: {
     minimize: true,
