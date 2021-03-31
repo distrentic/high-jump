@@ -1,10 +1,10 @@
 {
-  "name": "high-jump-server",
+  "name": "high-jump",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
-    "start": "nodemon index.ts",
     "build": "tsc --project ."
   },
   "keywords": [],
@@ -15,19 +15,16 @@
     "url": "http://github.com/distrentic/high-jump.git"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "high-jump": "file:../lib/dist",
     "socket.io": "^4.0.0",
-    "ssh2": "^0.8.9",
-    "winston": "^3.3.3"
+    "ssh2": "^0.8.9"
   },
   "devDependencies": {
-    "@types/express": "^4.17.11",
-    "@types/node": "^14.14.35",
     "@types/socket.io": "^2.1.13",
     "@types/ssh2": "^0.5.46",
-    "nodemon": "^2.0.7",
-    "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
+  },
+  "peerDependencies": {
+    "socket.io": "^4.0.0",
+    "ssh2": "^0.8.9"
   }
 }

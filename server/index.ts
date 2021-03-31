@@ -2,7 +2,7 @@ import express from "express";
 import { Server as HttpServer } from "http";
 import { Server as SocketServer } from "socket.io";
 import log from "./log";
-import shell from "./shell";
+import shell from "high-jump";
 
 const PORT = process.env["PORT"] || 8080;
 

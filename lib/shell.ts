@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
-import * as winston from "winston";
 import ssh2 from "ssh2";
+import { Logger } from "./logger";
 
 interface ShellConfig {
   host: string;
@@ -18,7 +18,7 @@ interface TermConfig {
 
 type ShellRequest = ShellConfig & TermConfig;
 
-const shell = (socket: Socket, log: winston.Logger) => {
+const shell = (socket: Socket, log: Logger) => {
   const session = new ssh2.Client();
   let shellConfig: ShellConfig;
   let termConfig: TermConfig;
