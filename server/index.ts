@@ -5,7 +5,8 @@ import { Server as SocketServer } from "socket.io";
 import log from "./log";
 import shell from "./shell";
 
-const PORT = 8080;
+const PORT = process.env["PORT"] || 8080;
+
 const app = express();
 const server = new HttpServer(app);
 const io = new SocketServer(server, { serveClient: false, path: "/ssh" });
