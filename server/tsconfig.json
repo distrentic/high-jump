@@ -6,9 +6,6 @@
     "noImplicitAny": true,
     "strict": true,
     "rootDir": ".",
-    "outDir": "build",
-  },
-  "exclude": [
-    "client"
-  ]
+    "outDir": "../build",
+  }
 }
