@@ -8,7 +8,11 @@ const PORT = process.env["PORT"] || 8080;
 
 const app = express();
 const server = new HttpServer(app);
-const io = new SocketServer(server, { serveClient: false, path: "/ssh" });
+const io = new SocketServer(server, {
+  serveClient: false,
+  path: "/ssh",
+  cors: { origin: "*" },
+});
 
 app.get("/", (req, res) => res.send("high-jump: Web SSH backend"));
 

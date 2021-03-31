@@ -5,7 +5,6 @@
     "target": "ES6",
     "noImplicitAny": true,
     "strict": true,
-    "declaration": true,
     "rootDir": ".",
     "outDir": "./build",
   }
