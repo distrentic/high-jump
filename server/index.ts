@@ -29,5 +29,5 @@ app.get("/connect/host", (req, res) => {
 });
 
 server.listen(PORT, () => {
-  log.info(`high-jump is running at https://localhost:${PORT}`);
+  log.info(`high-jump is running at ::${PORT}`);
 });
