@@ -21,3 +21,13 @@ io.on("connection", (socket) => shell(socket, log));
 server.listen(PORT, () => {
   log.info(`high-jump is running at ::${PORT}`);
 });
+
+const signals = ["SIGTERM", "SIGINT"];
+
+signals.forEach((signal) =>
+  process.on(signal, () => {
+    log.info("high-jump is shutting down!!!");
+    io.close();
+    server.close();
+  })
+);
