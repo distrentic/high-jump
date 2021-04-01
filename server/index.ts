@@ -4,7 +4,7 @@ import { Server as SocketServer } from "socket.io";
 import log from "./log";
 import shell from "high-jump";
 
-const PORT = process.env["PORT"] || 8080;
+const PORT = process.env["PORT"] || 8022;
 
 const app = express();
 const server = new HttpServer(app);

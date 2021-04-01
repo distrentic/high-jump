@@ -11,7 +11,7 @@ term.open(terminalContainer);
 term.focus();
 fitAddon.fit();
 
-const socket = io("http://localhost:8080/", { path: "/ssh" }).open();
+const socket = io("http://localhost:8022/", { path: "/ssh" }).open();
 
 window.addEventListener("resize", resize, false);
 
