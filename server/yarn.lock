@@ -754,10 +754,7 @@ has-yarn@^2.1.0:
   integrity sha512-UqBRqi4ju7T+TqGNdqAO0PaSVGsDGJUBQvk9eUWNGRY1CFGDzYhLWoM7JQEemnlvVcv/YEmc2wNW8BC24EnUsw==
 
 "high-jump@file:../lib/dist":
-  version "0.1.0"
-  dependencies:
-    socket.io "^4.0.0"
-    ssh2 "^0.8.9"
+  version "0.0.0"
 
 http-cache-semantics@^4.0.0:
   version "4.1.0"
