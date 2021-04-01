@@ -6,7 +6,9 @@ interface ShellConfig {
   host: string;
   port: number;
   username: string;
-  password: string;
+  password?: string;
+  privateKey?: string;
+  passphrase?: string;
 }
 
 interface TermConfig {
@@ -14,6 +16,13 @@ interface TermConfig {
   cols: number;
   height: number;
   width: number;
+}
+
+enum ErrorType {
+  SSH_CONNECTION_ERROR = "SSH_CONNECTION_ERROR",
+  SSH_AUTHENTICATION_ERROR = "SSH_AUTHENTICATION_ERROR",
+  SHELL_ERROR = "SHELL_ERROR",
+  SOCKET_ERROR = "SOCKET_ERROR",
 }
 
 type ShellRequest = ShellConfig & TermConfig;
@@ -26,16 +35,27 @@ const shell = (socket: Socket, log: Logger) => {
   socket.on("shell", (req: ShellRequest) => {
     log.info("shell requested for %s:%d", req.host, req.port);
 
-    shellConfig = req;
-    termConfig = req;
+    if (req.username && (req.password || req.privateKey)) {
+      shellConfig = req;
+      termConfig = req;
 
-    session.connect({
-      host: req.host,
-      port: req.port,
-      username: req.username,
-      password: req.password,
-      tryKeyboard: true,
-    });
+      session.connect({
+        host: req.host,
+        port: req.port,
+        username: req.username,
+        password: req.password,
+        privateKey: req.privateKey,
+        passphrase: req.passphrase,
+        tryKeyboard: true,
+      });
+    } else {
+      log.error(
+        "Authentication failure due to missing credentials for %s:%d",
+        req.host,
+        req.port
+      );
+      handleError(ErrorType.SSH_AUTHENTICATION_ERROR);
+    }
   });
 
   session.on("banner", (data) => {
@@ -57,7 +77,11 @@ const shell = (socket: Socket, log: Logger) => {
         width: termConfig.width,
       },
       (err, stream) => {
-        if (err) throw err;
+        if (err) {
+          log.error(err);
+          handleError(ErrorType.SHELL_ERROR);
+          return;
+        }
 
         socket.on("data", (data: string) => {
           stream.write(data);
@@ -85,9 +109,9 @@ const shell = (socket: Socket, log: Logger) => {
         });
 
         socket.on("error", (err) => {
-          log.error("client connection error");
+          log.error("connection error");
           log.error(err);
-          session.end();
+          handleError(ErrorType.SOCKET_ERROR);
         });
 
         stream.on("data", (data: string) => {
@@ -122,15 +146,15 @@ const shell = (socket: Socket, log: Logger) => {
   session.on("error", (err) => {
     log.error("connection error");
     log.error(err);
+    handleError(ErrorType.SSH_CONNECTION_ERROR);
   });
 
-  session.on(
-    "keyboard-interactive",
-    (name, instructions, instructionsLang, prompts, finish) => {
-      log.debug("conn.on('keyboard-interactive')");
-      finish(["password"]);
-    }
-  );
+  const handleError = (type: ErrorType) => {
+    log.info("Disconnecting socket client.");
+    socket.emit("shell_error", type);
+    socket.disconnect(true);
+    session.end();
+  };
 };
 
 export default shell;
