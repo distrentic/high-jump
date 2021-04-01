@@ -45,3 +45,7 @@ term.onData((data: string) => {
 socket.on("data", (data: ArrayBuffer) => {
   term.write(new TextDecoder().decode(data));
 });
+
+socket.on("shell_error", (type: string) => {
+  alert(type);
+});
