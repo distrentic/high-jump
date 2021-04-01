@@ -1,14 +1,17 @@
 {
-  "name": "high-jump",
+  "name": "@distrentic/high-jump",
   "version": "0.1.0",
-  "description": "",
+  "description": "An SSH jump server library using ssh2 and socket.io",
+  "homepage": "https://github.com/distrentic/high-jump",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --project ."
   },
-  "keywords": [],
-  "author": "Onat Mercan <onat.mercan@gmail.com>",
+  "keywords": ["ssh", "ssh2", "web-ssh", "jump-server", "gateway", "ssh-gateway"],
+  "author": {
+    "name": "distrentic"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",

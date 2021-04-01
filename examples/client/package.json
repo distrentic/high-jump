@@ -1,14 +1,14 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "description": "high-jump example client",
   "scripts": {
     "build": "webpack --progress --config webpack.config.js",
     "start": "http-server ./ -p 8081"
   },
-  "keywords": [],
-  "author": "",
+  "author": {
+    "name": "distrentic"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/socket.io-client": "^1.4.36",
