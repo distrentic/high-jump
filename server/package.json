@@ -1,7 +1,7 @@
 {
   "name": "@distrentic/high-jump-server",
   "version": "0.1.0",
-  "description": "Easy-to-use SSH jump server using ssh2, socket.io and express",
+  "description": "An SSH jump server using ssh2, socket.io and express",
   "homepage": "https://github.com/distrentic/high-jump",
   "main": "build/index.js",
   "scripts": {
