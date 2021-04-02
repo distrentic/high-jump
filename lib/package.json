@@ -1,6 +1,6 @@
 {
   "name": "@distrentic/high-jump",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An SSH jump server library using ssh2 and socket.io",
   "homepage": "https://github.com/distrentic/high-jump",
   "main": "dist/index.js",
